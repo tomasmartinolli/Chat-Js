@@ -1,0 +1,65 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<title>Chat</title>
+</head>
+<body>
+	<textarea id="nomeChat"></textarea></br>
+	<textarea id="output" rows="8" cols="80"></textarea></br>
+	<b>Mensagem</b><br></b>
+    <input type="text" id="msgescrita" name="msgescrita" size="75" required></br>
+	<button type="submit" onclick="enviarmsg();" >Enviar</button>
+	<script type="text/javascript" charset="utf-8">
+		var usuario;
+		function receberDados() {
+			httpEnvioChat = new XMLHttpRequest(); //Envia qual chat deve ser utilizado
+			httpEnvioChat.open("POST","/enviarchat", true);
+			httpEnvioChat.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			httpEnvioChat.send('chat='+document.getElementById("nomeChat").value);
+			xmlhttpOutput = new XMLHttpRequest();
+			xmlhttpOutput.open("GET","/texto", true);//Recebe os dados do chat
+			xmlhttpOutput.onreadystatechange = function() {
+			if (xmlhttpOutput.readyState == 4 && xmlhttpOutput.status == 200)
+				document.getElementById("output").value = xmlhttpOutput.responseText;
+			}
+			xmlhttpOutput.send();
+		}
+		function receberUsuario() {
+			xmlhttpUsuario = new XMLHttpRequest();//Recebe qual usuario esta logado
+			xmlhttpUsuario.open("GET","/usuario", true);
+			xmlhttpUsuario.onreadystatechange = function() {
+			if (xmlhttpUsuario.readyState == 4 && xmlhttpUsuario.status == 200)
+				usuario = xmlhttpUsuario.responseText;
+			}
+			xmlhttpUsuario.send();
+		}
+		function receberNomeChat() {
+			xmlhttpChat = new XMLHttpRequest();//Recebe o nome do Chat
+			xmlhttpChat.open("GET","/nomeChat", true);
+			xmlhttpChat.onreadystatechange = function() {
+			if (xmlhttpChat.readyState == 4 && xmlhttpChat.status == 200)
+				document.getElementById("nomeChat").value = xmlhttpChat.responseText;
+			}
+			xmlhttpChat.send();
+		}
+		function enviarmsg()
+		{
+			httpEnvioChat2 = new XMLHttpRequest();//Envia qual chat deve ser utilizado
+			httpEnvioChat2.open("POST","/enviarchat", true);
+			httpEnvioChat2.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			httpEnvioChat2.send('chat='+document.getElementById("nomeChat").value);
+			var msg = "";
+			http = new XMLHttpRequest();
+			http.open("POST","/enviar", true);//Envia a string escrita para o servidor
+			http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			http.send('msgescrita='+usuario+":"+document.getElementById("msgescrita").value + "\n");
+			document.getElementById("msgescrita").value = "";
+		}
+
+		receberNomeChat();
+		document.getElementById("nomeChat").readOnly = true;
+		setInterval(receberDados, 200);
+		receberUsuario();
+	</script>
+</body>
+</html>
