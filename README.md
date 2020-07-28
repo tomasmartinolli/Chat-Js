@@ -2,7 +2,7 @@
 
 	Este projeto foi desenvolvido no sexto semestre para disciplina de Tópicos em Programação.
 	O seu objetivo foi de desenvolver um chat simples com criação de usuário e separação dos chats 
-pelo nome definido.
+	pelo nome definido.
 	
 # Ferramentas
 
